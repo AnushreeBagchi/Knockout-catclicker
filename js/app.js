@@ -1,14 +1,29 @@
-var ViewModel = function (){
-    this.currentCat=ko.observable(new  Cats());
-    this.incrementCounter = function (){
-        this.currentCat().clickCount (this.currentCat().clickCount()+1);
-    };    
-};
+var initialCats= [
+    {
+        clickCount:0,
+        name :'Tabby',
+        imgSrc:'img/434164568_fea0ad4013_z.jpg',        
+        nicknames:['Tommy','Tonny']
+    },
+    {
+        clickCount:0,
+        name :'Kittie',
+        imgSrc:'img/22252709_010df3379e_z.jpg',        
+        nicknames:['Kate','Coco']
+    },
+    {
+        clickCount:0,
+        name :'Jolly',
+        imgSrc:'img/1413379559_412a540d29_z.jpg',        
+        nicknames:['Petni','ullu']
+    }
+];
 
-var Cats=function (){
-    this.clickCount= ko.observable(0);
-    this.name =ko.observable ('Tabby');
-    this.imgSrc=ko.observable ('img/434164568_fea0ad4013_z.jpg');
+var Cats=function (data){
+    this.clickCount= ko.observable(data.clickCount);
+    this.name =ko.observable (data.name);
+    this.imgSrc=ko.observable (data.imgSrc);
+    this.nicknames=ko.observableArray (data.nicknames);
     this.level= ko.computed ( function (){
         if(this.clickCount()<=10){
             return "Newborn"
@@ -20,11 +35,28 @@ var Cats=function (){
             return  "Teen"
            }
      }, this);
-     this.nicknames=ko.observableArray ();
-     this.nicknames.push('Tommy','Tonny');
+    
+
+};
+var ViewModel = function (){
+    var self=this;
+    
+    this.catlist= ko.observableArray([]);
+    initialCats.forEach(catItems => {
+        self.catlist.push(new Cats(catItems));       
+    });
+    this.currentCat=ko.observable();
+    
+    this.incrementCounter = function (){
+        this.clickCount (this.clickCount()+1);
+    };   
+    this.onClick= function (selectedCat, event){
+        self.currentCat(selectedCat);
+    }; 
 };
 
 ko.applyBindings (new ViewModel());
+
 
 // var ViewModel = function() {
 //     this.num1 = ko.observable(10); //creating an observable
